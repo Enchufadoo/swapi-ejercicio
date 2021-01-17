@@ -1,0 +1,54 @@
+FROM php:7.4-apache
+
+RUN apt-get update && \
+    apt-get install -y \
+        libzip-dev libmcrypt-dev zlib1g-dev unzip
+
+RUN apt-get install -y \
+        libxml2-dev
+
+RUN apt-get install -y \
+        nano locate wget
+
+RUN yes | pecl install xdebug
+
+#RUN mkdir -p /usr/local/lib/php/extensions/xdebug
+
+#RUN mv $(find /usr/local/lib/php/extensions/ -name xdebug.so) /usr/local/lib/php/extensions/xdebug/xdebug.so
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php
+RUN mv /var/www/html/composer.phar /usr/bin/composer
+
+RUN /usr/local/bin/docker-php-ext-install mysqli pdo pdo_mysql zip xmlwriter
+RUN apt-get install libssl-dev -y
+
+RUN /usr/local/bin/docker-php-ext-install zip
+
+# Install mcrypt
+RUN apt-get install -y libmcrypt-dev
+#RUN docker-php-ext-install mcrypt
+
+#RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+# Install GD
+RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev
+RUN docker-php-ext-configure gd
+RUN docker-php-ext-install gd
+
+# Install XSL
+RUN apt-get install -y libxslt-dev
+RUN docker-php-ext-install xsl
+
+# Install intl
+RUN apt-get install -y libicu-dev
+RUN docker-php-ext-install intl
+
+RUN a2enmod rewrite
+RUN usermod -u 1000 www-data
+RUN usermod -G staff www-data
+
+RUN composer global require laravel/installer
+ENV PATH="/root/.composer/vendor/bin:${PATH}"
+
+RUN a2dissite 000-default.conf
