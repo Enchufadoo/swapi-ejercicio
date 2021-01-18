@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CountRequest;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\Integer;
 
 class InventoryController extends Controller
 {
-    public function count(string $type, int $id)
+    public function count(CountRequest $request, string $type, int $id)
     {
+
         $client = new \GuzzleHttp\Client(['verify' => false]);
 
         $response = $client->request('GET', "https://swapi.dev/api/{$type}/${id}/", [
