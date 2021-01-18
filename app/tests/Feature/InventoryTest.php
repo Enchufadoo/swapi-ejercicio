@@ -19,7 +19,7 @@ class InventoryTest extends TestCase
 
         $response = $this->json('GET', "/api/inventory/{$inventory->type}/{$inventory->external_id}/count", []);
         $response->assertStatus(200);
-        $this->assertEquals($response->decodeResponseJson()['count'], 3);
+        $this->assertEquals(3,$response->decodeResponseJson()['count']);
     }
 
     /** @test */
@@ -40,5 +40,31 @@ class InventoryTest extends TestCase
         $response->assertStatus(422);
     }
 
+    /** @test */
+    public function can_set_the_ammount_of_vehicles()
+    {
+        $this->withoutExceptionHandling();
+        $inventory = Inventory::factory()->create(['external_id' => 4, 'count' => 3, 'type' => 'vehicles']);
+
+        $response = $this->json('POST', "/api/inventory/{$inventory->type}/{$inventory->external_id}/amount", [
+            'amount' => 23
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertEquals(23, $inventory->fresh()->count);
+    }
+
+    /** @test */
+    public function setting_an_incorrect_ammount_of_vehicles_returns_an_error()
+    {
+        $inventory = Inventory::factory()->create(['external_id' => 4, 'count' => 3, 'type' => 'vehicles']);
+
+        $response = $this->json('POST', "/api/inventory/{$inventory->type}/{$inventory->external_id}/amount", [
+            'amount' => -1
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertEquals(3, $inventory->fresh()->count);
+    }
 
 }

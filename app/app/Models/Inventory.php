@@ -14,4 +14,15 @@ class Inventory extends Model
     protected $keyType = 'integer';
 
     protected $fillable = ['count', 'external_id'];
+
+    public static function getOrCreate(int $id, int $count)
+    {
+        $inventory = self::where('external_id', $id)->first();
+
+        if(!$inventory){
+            $inventory = new Inventory(['external_id' => $id, 'count' => $count]);
+        }
+
+        return $inventory;
+    }
 }

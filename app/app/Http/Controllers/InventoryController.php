@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CountRequest;
+use App\Http\Requests\SetAmountRequest;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\Types\Integer;
 
 class InventoryController extends Controller
 {
+
+
     public function count(CountRequest $request, string $type, int $id)
     {
 
@@ -18,14 +21,25 @@ class InventoryController extends Controller
             'json' =>[]
         ]);
 
-        $inventory = Inventory::where('external_id', $id)->first();
-
-        if(!$inventory){
-            $inventory = new Inventory(['external_id' => $id, 'count' => 0]);
-        }
+        $inventory = Inventory::getOrCreate($id, 0);
 
         return [
             'count' => $inventory->count
         ];
+    }
+
+    public function setAmount(SetAmountRequest $request, string $type, int $id)
+    {
+        $amount = $request->post('amount');
+
+        $inventory = Inventory::getOrCreate($id, 0);
+        $inventory->count = $amount;
+        $inventory->save();
+
+
+
+        return [];
+
+
     }
 }

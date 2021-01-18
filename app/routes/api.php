@@ -18,4 +18,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/inventory/{type}/{id}/count',[\App\Http\Controllers\InventoryController::class, 'count']);
+Route::prefix('/inventory/{type}/{id}/')->group(function () {
+    Route::get('count',[\App\Http\Controllers\InventoryController::class, 'count']);
+    Route::post('amount',[\App\Http\Controllers\InventoryController::class, 'setAmount']);
+});
+
+
