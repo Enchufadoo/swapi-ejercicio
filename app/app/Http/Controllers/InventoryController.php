@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CountRequest;
 use App\Http\Requests\SetAmountRequest;
+use App\Http\Requests\SetDecrementRequest;
 use App\Http\Requests\SetIncrementRequest;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
@@ -62,7 +63,7 @@ class InventoryController extends Controller
     /**
      * Decrementa en unidades la cantidad de elementos de un vehiculo
      */
-    public function decrement(Request $request, string $type, int $id)
+    public function decrement(SetDecrementRequest $request, string $type, int $id)
     {
         $amount = $request->post('amount');
 

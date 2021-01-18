@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SetIncrementRequest extends CountRequest
+class SetDecrementRequest extends CountRequest
 {
     public function rules()
     {
