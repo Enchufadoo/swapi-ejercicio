@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CountRequest;
 use App\Http\Requests\SetAmountRequest;
+use App\Http\Requests\SetIncrementRequest;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\Types\Integer;
@@ -36,10 +37,18 @@ class InventoryController extends Controller
         $inventory->count = $amount;
         $inventory->save();
 
+        return [];
+    }
 
+    public function increment(SetIncrementRequest $request, string $type, int $id)
+    {
+        $amount = $request->post('amount');
+
+        $inventory = Inventory::getOrCreate($id, 0);
+        $inventory->count = $inventory->count + $amount;
+        $inventory->save();
 
         return [];
-
-
     }
+
 }

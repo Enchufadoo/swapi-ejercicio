@@ -67,4 +67,30 @@ class InventoryTest extends TestCase
         $this->assertEquals(3, $inventory->fresh()->count);
     }
 
+    /** @test */
+    public function can_increment_the_number_of_vehicles()
+    {
+        $inventory = Inventory::factory()->create(['external_id' => 4, 'count' => 3, 'type' => 'vehicles']);
+
+        $response = $this->json('POST', "/api/inventory/{$inventory->type}/{$inventory->external_id}/amount/increment", [
+            'amount' => 10
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertEquals(13, $inventory->fresh()->count);
+    }
+
+    /** @test */
+    public function the_increment_of_the_number_of_vehicles_must_be_at_least_one()
+    {
+        $inventory = Inventory::factory()->create(['external_id' => 4, 'count' => 3, 'type' => 'vehicles']);
+
+        $response = $this->json('POST', "/api/inventory/{$inventory->type}/{$inventory->external_id}/amount/increment", [
+            'amount' => 0
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertEquals(3, $inventory->fresh()->count);
+    }
+
 }
