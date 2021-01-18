@@ -22,6 +22,7 @@ Route::prefix('/inventory/{type}/{id}/')->group(function () {
     Route::get('count',[\App\Http\Controllers\InventoryController::class, 'count']);
     Route::post('amount',[\App\Http\Controllers\InventoryController::class, 'setAmount']);
     Route::post('amount/increment',[\App\Http\Controllers\InventoryController::class, 'increment']);
+    Route::post('amount/decrement',[\App\Http\Controllers\InventoryController::class, 'decrement']);
 });
 
 

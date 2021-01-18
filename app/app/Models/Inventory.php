@@ -25,4 +25,18 @@ class Inventory extends Model
 
         return $inventory;
     }
+
+    /**
+     * Set the user's first name.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setCountAttribute($value)
+    {
+        if($value < 0){
+            throw new \Exception('Count can\'t be less than 0');
+        }
+        $this->attributes['count'] = $value;
+    }
 }

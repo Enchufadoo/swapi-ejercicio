@@ -51,4 +51,15 @@ class InventoryController extends Controller
         return [];
     }
 
+    public function decrement(Request $request, string $type, int $id)
+    {
+        $amount = $request->post('amount');
+
+        $inventory = Inventory::getOrCreate($id, 0);
+        $inventory->count = $inventory->count - $amount;
+        $inventory->save();
+
+        return [];
+    }
+
 }
