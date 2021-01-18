@@ -6,6 +6,7 @@ use App\Http\Requests\CountRequest;
 use App\Http\Requests\SetAmountRequest;
 use App\Http\Requests\SetDecrementRequest;
 use App\Http\Requests\SetIncrementRequest;
+use App\Http\SwapiApi;
 use App\Models\Inventory;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\Types\Integer;
@@ -18,12 +19,8 @@ class InventoryController extends Controller
      */
     public function count(CountRequest $request, string $type, int $id)
     {
-
-        $client = new \GuzzleHttp\Client(['verify' => false]);
-
-        $response = $client->request('GET', "https://swapi.dev/api/{$type}/${id}/", [
-            'json' =>[]
-        ]);
+        $swapiApi = new SwapiApi();
+        $swapiApi->getVehicle($type, $id);
 
         $inventory = Inventory::getOrCreate($id, $type,0);
 
@@ -39,6 +36,9 @@ class InventoryController extends Controller
     {
         $amount = $request->post('amount');
 
+        $swapiApi = new SwapiApi();
+        $swapiApi->getVehicle($type, $id);
+
         $inventory = Inventory::getOrCreate($id, $type, 0);
         $inventory->count = $amount;
         $inventory->save();
@@ -53,6 +53,9 @@ class InventoryController extends Controller
     {
         $amount = $request->post('amount');
 
+        $swapiApi = new SwapiApi();
+        $swapiApi->getVehicle($type, $id);
+
         $inventory = Inventory::getOrCreate($id, $type, 0);
         $inventory->count = $inventory->count + $amount;
         $inventory->save();
@@ -66,6 +69,9 @@ class InventoryController extends Controller
     public function decrement(SetDecrementRequest $request, string $type, int $id)
     {
         $amount = $request->post('amount');
+
+        $swapiApi = new SwapiApi();
+        $swapiApi->getVehicle($type, $id);
 
         $inventory = Inventory::getOrCreate($id, $type, 0);
         $inventory->count = $inventory->count - $amount;
